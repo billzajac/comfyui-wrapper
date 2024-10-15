@@ -6,11 +6,13 @@
 * DONE - Determine package management system
     * uv
     * fallback (poetry - awkward with Docker)
+* DONE - Decide how to manage the ComfyUI github repo
+    * git submodule (this will allow for the most straightforward way to independently manage)
 * DONE - Pick a linting / pretty standard
     * ruff (with I)
 * DONE - Learn how to get pytorch working on Mac M2
 * Code
-    * Add ComfyUI
+    * DONE - Add ComfyUI (using git submodules)
     * Pick a model
         * Keep track of what is unique to this model and what requirements are specific (to potentially change or generalize)
     * Write wrapper
@@ -49,6 +51,7 @@ uv add --prerelease allow --index-url https://download.pytorch.org/whl/nightly/c
 # re-sync and lock due to frozen flag above
 uv sync
 uv lock
+git submodule add git@github.com:comfyanonymous/ComfyUI.git comfyui
 ```
 
 ### Test pytorch on Apple Silicon
@@ -63,4 +66,20 @@ if torch.backends.mps.is_available():
     print (x)
 else:
     print ("MPS device not found.")
+```
+
+## Working with ComfyUI as a git submodule
+
+### After cloning this repo
+
+```
+git submodule init
+git submodule update
+```
+
+### To pull the latest changes from ComfyUI
+
+```
+cd comfyui
+git pull origin main
 ```
