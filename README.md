@@ -17,9 +17,17 @@
     * Tailwind CSS
 * Code
     * DONE - Add ComfyUI (using git submodules)
-    * Pick a model
+    * Pick models
+        * https://civitai.com/
+            * https://civitai.com/models/62437/v1-5-pruned-emaonly
+        * https://huggingface.co/models
+
         * Keep track of what is unique to this model and what requirements are specific (to potentially change or generalize)
+    * Fork and hack the frontend (Future, look into alternative UIs listed here: https://www.comfy.org/)
+        * https://github.com/Comfy-Org/ComfyUI_frontend
+        * https://github.com/mcmonkeyprojects/SwarmUI
     * Write wrapper
+
 
 * Choose a gitflow branching strategy
     * https://docs.aws.amazon.com/prescriptive-guidance/latest/choosing-git-branch-approach/gitflow-branching-strategy.html
@@ -36,6 +44,8 @@
 * Determine logging
 * Determine metrics
 * Determine user accounts and SSO
+* Enable high quality previews
+    * https://github.com/comfyanonymous/ComfyUI?tab=readme-ov-file#how-to-show-high-quality-previews
 
 
 ## Prereqs
@@ -106,6 +116,9 @@ cd comfyui-wrapper
 git submodule init
 git submodule update
 uv sync
+
+# Download the model from: https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/resolve/main/v1-5-pruned-emaonly.safetensors?download=true
+# Save it to: comfyui/models/checkpoints
 ```
 
 * To run things, you can use
@@ -122,3 +135,9 @@ source .venv/bin/activate
 ...
 ```
 
+
+## ComfyUI
+
+```
+uv run comfyui/main.py --preview-method auto
+```
