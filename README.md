@@ -1,4 +1,6 @@
-# Wrapper for CompyUI
+# Wrapper for ComfyUI
+
+* https://github.com/comfyanonymous/ComfyUI
 
 ## TODO
 
@@ -11,21 +13,29 @@
 * DONE - Pick a linting / pretty standard
     * ruff (with I)
 * DONE - Learn how to get pytorch working on Mac M2
+* DONE - Choose a CSS Framework
+    * Tailwind CSS
 * Code
     * DONE - Add ComfyUI (using git submodules)
     * Pick a model
         * Keep track of what is unique to this model and what requirements are specific (to potentially change or generalize)
     * Write wrapper
 
+* Choose a gitflow branching strategy
+    * https://docs.aws.amazon.com/prescriptive-guidance/latest/choosing-git-branch-approach/gitflow-branching-strategy.html
 * Containerize
 * Determine hosting, deployment, and development model
     * docker, docker-compose, git triggers
+    * https://docs.astral.sh/uv/guides/integration/docker/
 * Tests
     * Unit
     * Integration
     * Deployment stopping
     * Load / Performance
     * Cost
+* Determine logging
+* Determine metrics
+* Determine user accounts and SSO
 
 
 ## Prereqs
@@ -52,6 +62,7 @@ uv add --prerelease allow --index-url https://download.pytorch.org/whl/nightly/c
 uv sync
 uv lock
 git submodule add git@github.com:comfyanonymous/ComfyUI.git comfyui
+uv add --requirements comfyui/requirements.txt
 ```
 
 ### Test pytorch on Apple Silicon
@@ -83,3 +94,31 @@ git submodule update
 cd comfyui
 git pull origin main
 ```
+
+## New Development Env
+
+* Install uv
+    * https://docs.astral.sh/uv/getting-started/installation/
+
+```
+git clone git@github.com:billzajac/comfyui-wrapper.git
+cd comfyui-wrapper
+git submodule init
+git submodule update
+uv sync
+```
+
+* To run things, you can use
+
+```
+uv run ...
+```
+
+or 
+
+```
+uv sync
+source .venv/bin/activate
+...
+```
+
