@@ -17,7 +17,8 @@
     * Tailwind CSS
 * Code
     * DONE - Add ComfyUI (using git submodules)
-    * Pick models
+    * Pick model
+        * https://comfyui-wiki.com/resource/stable-diffusion-models
         * https://civitai.com/
             * https://civitai.com/models/62437/v1-5-pruned-emaonly
         * https://huggingface.co/models
