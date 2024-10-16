@@ -2,6 +2,9 @@
 
 * https://github.com/comfyanonymous/ComfyUI
 
+## Questions
+
+
 ## TODO
 
 * DONE - Learn and understand more about ComfyUI
@@ -30,6 +33,8 @@
     * Write wrapper
 
 
+* API documentation
+    * Use Swagger to autogenerate
 * Choose a gitflow branching strategy
     * https://docs.aws.amazon.com/prescriptive-guidance/latest/choosing-git-branch-approach/gitflow-branching-strategy.html
 * Containerize
@@ -74,6 +79,7 @@ uv sync
 uv lock
 git submodule add git@github.com:comfyanonymous/ComfyUI.git comfyui
 uv add --requirements comfyui/requirements.txt
+uv add fastapi uvicorn
 ```
 
 ### Test pytorch on Apple Silicon
