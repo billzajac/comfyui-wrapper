@@ -6,12 +6,18 @@ import json
 from urllib import request
 import random
 import uuid
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI()
-api_url = "http://127.0.0.1:8188/prompt"
-# completed workflows write output images to this directory
-output_dir = "./comfyui/output"
-timeout = 180 # how long to wait for the image
+
+# Retrieve the API URL and output directory from environment variables
+api_url = os.getenv("API_URL")
+output_dir = os.getenv("OUTPUT_DIR")
+
 
 # Pydantic model for user input
 class PromptParams(BaseModel):
@@ -20,6 +26,7 @@ class PromptParams(BaseModel):
     seed: int = Field(default=None)
     height: int = Field(default=None, le=768)  # Max height
     width: int = Field(default=None, le=768)   # Max width
+    wait_for_image: bool = Field(default=False)
 
 def load_default_prompt():
     with open("defaults.json", "r") as file:
@@ -79,6 +86,15 @@ def submit_prompt(params: PromptParams):
 
     # Queue the prompt via ComfyUI
     queue_prompt(prompt)
+
+    # Check if we should wait for the image or not
+    if params.wait_for_image:
+        # Wait for the generated image (timeout after 180 seconds)
+        img_bytes = wait_for_image(client_id)
+        return Response(img_bytes, media_type="image/jpeg")
+    else:
+        # Simply return confirmation that the request was submitted
+        return {"status": "Prompt submitted successfully.", "seed": params.seed, "client_id": client_id}
     #return {"status": f"Prompt submitted with seed: {params.seed}"}
 
     img_bytes = wait_for_image(client_id)

@@ -42,6 +42,7 @@
     * docker, docker-compose, git triggers
     * https://docs.astral.sh/uv/guides/integration/docker/
 * Tests
+    * Prelim curl tests: test_curls.md
     * Unit
     * Integration
     * Deployment stopping
@@ -81,6 +82,7 @@ uv lock
 git submodule add git@github.com:comfyanonymous/ComfyUI.git comfyui
 uv add --requirements comfyui/requirements.txt
 uv add fastapi uvicorn
+uv add python-dotenv
 ```
 
 ### Test pytorch on Apple Silicon
@@ -127,7 +129,30 @@ uv sync
 
 # Download the model from: https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/resolve/main/v1-5-pruned-emaonly.safetensors?download=true
 # Save it to: comfyui/models/checkpoints
+
+cp .env.example .env
 ```
+
+### Start the services
+
+```
+./start_all
+```
+
+### Watch or stop the services
+
+* Connect using screen
+
+```
+screen -x wrapper
+screen -x comfyui
+```
+
+* To detach and leave things running, Ctrl-a Ctrl-d
+* To kill the service, Ctrl-c
+
+
+## Using uv
 
 * To run things, you can use
 

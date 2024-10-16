@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Start the uvicorn (wrapper) process in a screen session named "wrapper"
+screen -dmS wrapper bash -c 'uv run uvicorn app:app --reload'
+
+# Start the ComfyUI process in a screen session named "comfyui"
+screen -dmS comfyui bash -c 'uv run python comfyui/main.py'
+
+# Notify the user
+echo "Started uvicorn in screen session 'wrapper' - connect with: screen -x wrapper"
+echo "Started ComfyUI in screen session 'comfyui' - connect with: screen -x comfyui"
+echo
+echo "Ctrl-c inside a screen to kill the service"
+echo "Ctrl-a Ctrl-d inside a screen to detach from the screen"
+echo
+echo "See which screens are running with: screen -ls"
+echo
