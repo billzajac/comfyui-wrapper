@@ -87,15 +87,33 @@ def submit_prompt(params: PromptParams):
     # Queue the prompt via ComfyUI
     queue_prompt(prompt)
 
-    # Check if we should wait for the image or not
-    if params.wait_for_image:
-        # Wait for the generated image (timeout after 180 seconds)
-        img_bytes = wait_for_image(client_id)
-        return Response(img_bytes, media_type="image/jpeg")
-    else:
-        # Simply return confirmation that the request was submitted
+    # If wait_for_image is False, return the seed and client_id immediately
+    if not params.wait_for_image:
         return {"status": "Prompt submitted successfully.", "seed": params.seed, "client_id": client_id}
-    #return {"status": f"Prompt submitted with seed: {params.seed}"}
 
-    img_bytes = wait_for_image(client_id)
-    return Response(img_bytes, media_type="image/jpeg")
+    # Wait for the image to be generated
+    image_bytes = wait_for_image(client_id)
+
+    # Prepare the metadata to be included in the response
+    metadata = {
+        "seed": params.seed,
+        "client_id": client_id,
+    }
+
+    # Create a multipart response (metadata + image)
+    boundary = "boundary"  # A simple string to separate the parts of the response
+
+    # Create response content
+    multipart_response = f"--{boundary}\r\n"
+    multipart_response += "Content-Type: application/json\r\n\r\n"
+    multipart_response += f"{json.dumps(metadata)}\r\n"
+    multipart_response += f"--{boundary}\r\n"
+    multipart_response += "Content-Type: image/jpeg\r\n\r\n"
+    multipart_response = multipart_response.encode("utf-8") + image_bytes
+    multipart_response += f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+    # Return the multipart response with metadata and the image
+    return Response(
+        multipart_response,
+        media_type=f"multipart/mixed; boundary={boundary}"
+    )

@@ -13,8 +13,9 @@ curl -X POST "http://127.0.0.1:8000/submit-prompt/" \
 ```
 curl -X POST "http://127.0.0.1:8000/submit-prompt/" \
 -H "Content-Type: application/json" \
--d '{"positive_text": "beautiful scenery", "wait_for_image": true}' \
---output /tmp/output_image.jpg
+-d '{"positive_text": "a message in a bottle on a beautiful shore", "wait_for_image": true}' \
+--output /tmp/output_response.txt && \
+uv run python3 ./multipart_curl_unpack.py
 ```
 
 * Unhappy height too big
