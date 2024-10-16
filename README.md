@@ -47,9 +47,10 @@
     * Deployment stopping
     * Load / Performance
     * Cost
-* Determine logging
-* Determine metrics
-* Determine user accounts and SSO
+* Logging
+* Metrics
+* User accounts and SSO
+* Save workflow files per user and request (and allow load)
 * Enable high quality previews
     * https://github.com/comfyanonymous/ComfyUI?tab=readme-ov-file#how-to-show-high-quality-previews
 
