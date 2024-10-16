@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+import time
+from pathlib import Path
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, constr
 import json
 from urllib import request
@@ -9,6 +11,7 @@ app = FastAPI()
 api_url = "http://127.0.0.1:8188/prompt"
 # completed workflows write output images to this directory
 output_dir = "./comfyui/output"
+timeout = 180 # how long to wait for the image
 
 # Pydantic model for user input
 class PromptParams(BaseModel):
@@ -29,11 +32,18 @@ def queue_prompt(prompt):
     req = request.Request(api_url, data=data)
     request.urlopen(req)
 
-def wait_for_image(file_prefix):
-    # returns the image as bytes
-    for f in Path(output_dir).iterdir():
-        if f.name.startswith(file_prefix):
-            return f.read_bytes()
+def wait_for_image(file_prefix, timeout=180, poll_interval=5):
+    """Poll the output directory for the generated image file."""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        # Check for the file in the output directory
+        for f in Path(output_dir).iterdir():
+            if f.name.startswith(file_prefix) and f.suffix in [".jpg", ".jpeg", ".png"]:
+                return f.read_bytes()  # Return image bytes if the file is found
+        time.sleep(poll_interval)  # Wait for the next poll
+
+    # If the image is not found within the timeout period, raise an error
+    raise HTTPException(status_code=408, detail="Image generation timed out.")
 
 # API route to receive and queue prompts with overrides
 @app.post("/submit-prompt/")
@@ -71,5 +81,5 @@ def submit_prompt(params: PromptParams):
     queue_prompt(prompt)
     #return {"status": f"Prompt submitted with seed: {params.seed}"}
 
-    img_bytes = wait_for_image(file_prefix)
+    img_bytes = wait_for_image(client_id)
     return Response(img_bytes, media_type="image/jpeg")
