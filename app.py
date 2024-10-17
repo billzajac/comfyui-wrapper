@@ -1,6 +1,6 @@
 import time
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel, Field, constr
 import json
 from urllib import request
@@ -52,6 +52,25 @@ def wait_for_image(file_prefix, timeout=180, poll_interval=5):
     # If the image is not found within the timeout period, raise an error
     raise HTTPException(status_code=408, detail="Image generation timed out.")
 
+def create_multipart_response(metadata, image_bytes):
+    # Define the boundary
+    boundary = "boundary"  # Simple string for boundary
+
+    # Create response content (with binary-safe concatenation)
+    multipart_response = (
+        f"--{boundary}\r\n"
+        "Content-Type: application/json\r\n\r\n"
+        f"{json.dumps(metadata)}\r\n"
+        f"--{boundary}\r\n"
+        "Content-Type: image/jpeg\r\n\r\n"
+    ).encode("utf-8") + image_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+    # Return the multipart response
+    return Response(
+        multipart_response,
+        media_type=f"multipart/mixed; boundary={boundary}"
+    )
+
 # API route to receive and queue prompts with overrides
 @app.post("/submit-prompt/")
 def submit_prompt(params: PromptParams):
@@ -100,20 +119,5 @@ def submit_prompt(params: PromptParams):
         "client_id": client_id,
     }
 
-    # Create a multipart response (metadata + image)
-    boundary = "boundary"  # A simple string to separate the parts of the response
-
-    # Create response content
-    multipart_response = f"--{boundary}\r\n"
-    multipart_response += "Content-Type: application/json\r\n\r\n"
-    multipart_response += f"{json.dumps(metadata)}\r\n"
-    multipart_response += f"--{boundary}\r\n"
-    multipart_response += "Content-Type: image/jpeg\r\n\r\n"
-    multipart_response = multipart_response.encode("utf-8") + image_bytes
-    multipart_response += f"\r\n--{boundary}--\r\n".encode("utf-8")
-
     # Return the multipart response with metadata and the image
-    return Response(
-        multipart_response,
-        media_type=f"multipart/mixed; boundary={boundary}"
-    )
+    return create_multipart_response(metadata, image_bytes)
