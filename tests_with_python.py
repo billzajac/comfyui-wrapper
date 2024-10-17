@@ -96,7 +96,7 @@ class TestComfyAPI(unittest.TestCase):
         metadata = json.loads(json_part["payload"])
         self.assertIn("seed", metadata)
         self.assertIn("client_id", metadata)
-        print(f"Happy path with wait_for_image: metadata {metadata}")
+        print(f"\nHappy path with wait_for_image: metadata {metadata}")
 
         # Verify image part and save it as a .jpg file
         image_part = next(p for p in parts if p["content_type"] == "image/jpeg")
@@ -119,7 +119,7 @@ class TestComfyAPI(unittest.TestCase):
 
         # Save output to file
         # self.save_response_to_file(response.content, "test_happy_all_params")
-        print(f"Happy path with all params: {response.content}")
+        print(f"\nHappy path with all params: {response.content}")
 
         # Expecting a JSON response (no multipart)
         self.assertEqual(response.status_code, 200, f"Failed: {response.text}")
